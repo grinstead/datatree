@@ -53,17 +53,32 @@ compiled = compiled.replaceAll("export{};", "");
 
 const [before, exportsStr, after] = compiled.split(pageBreak);
 
-const exportParts = exportsStr.split(exportBreak).map((part) => {
-  const stripStart = "${";
-  const stripEnd = "}";
-  return part.slice(stripStart.length, -stripEnd.length);
+const exports = exportsStr.split(exportBreak).map((part, i) => {
+  const name = names[i];
+  let code = part.slice("${".length, -"}".length);
+  if (code.startsWith("(")) {
+    code = stripEnds("(", code, ")");
+  }
+
+  if (code.startsWith("function(")) {
+    return `export function ${name}(` + stripEnds("function(", code);
+  } else if (code.startsWith("class{")) {
+    return `export class ${name} {` + stripEnds("class{", code);
+  }
+
+  return `export const ${name} = ${code};`;
 });
 
-const exports = names.map(
-  (name, i) => `export const ${name} = ${exportParts[i]}`
-);
+const result =
+  stripEnds("", before, "window.EXPORTS`") +
+  "\n" +
+  exports.join("\n") +
+  stripEnds("`;", after, "");
 
-const result = `${before.slice(0, -"window.EXPORTS`".length)}
-${exports.join(";\n")};${after.slice("`;".length)}`;
+await writeFile("datatree.min.js", result.trimStart());
 
-await writeFile("datatree.min.js", result);
+function stripEnds(prefix, str, suffix) {
+  return suffix
+    ? str.slice(prefix.length, -suffix.length)
+    : str.slice(prefix.length);
+}
