@@ -1,0 +1,23 @@
+{
+  "name": "datatree",
+  "version": "0.1.0",
+  "description": "A library for manipulating, parsing, and updating js data",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grinstead/datatree.git"
+  },
+  "author": "Joe Grinstead <npm@mailforce.net> (https://github.com/grinstead)",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/grinstead/datatree/issues"
+  },
+  "homepage": "https://github.com/grinstead/datatree#readme",
+  "devDependencies": {
+    "@tscc/tscc": "^0.9.4"
+  }
+}
